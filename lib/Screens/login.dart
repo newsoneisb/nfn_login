@@ -32,7 +32,7 @@ class _LoginPage extends State<LoginPage> {
     Map<String, dynamic> values = {'username': username, 'password': password};
 
     try {
-      var response = await dio.post(LOGIN, data: values);
+      var response = await dio.post(loginurl, data: values);
 
       if (response.statusCode == 200) {
         var jsondata = json.decode('$response');
@@ -54,7 +54,7 @@ class _LoginPage extends State<LoginPage> {
             String fullname = jsondata["fullname"];
             String address = jsondata["address"];
             print(fullname);
-            
+
             // Navigator.push(context, MaterialPageRoute(builder: (context) => Home()),);
             // Navigator.pushNamed(context, '/home');
             Navigator.pushReplacementNamed(context, '/home');

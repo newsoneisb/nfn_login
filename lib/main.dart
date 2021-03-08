@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nfn_login/Screens/login_screen.dart';
 import 'Screens/login.dart';
 import 'home.dart';
 import 'login_talha.dart';
@@ -23,11 +24,11 @@ class _MyAppState extends State {
   Widget build(BuildContext context) {
     return MaterialApp(
       // home: (_loginStatus==1)?Home():LoginPage(),
-      home: LoginScreen(),
+      home: LoginScreen2(),
       theme: ThemeData.light(),
       debugShowCheckedModeBanner: false,
       routes: {
-        '/login': (BuildContext context) => new LoginScreen(),
+        '/login': (BuildContext context) => new LoginScreen2(),
         '/home': (BuildContext context) => new Home(),
       },
     );

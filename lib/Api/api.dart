@@ -1,3 +1,3 @@
-const String ROOT="https://fun4chat.com";
+const String ROOT="https://nfnapp.000webhostapp.com/";
 const String REGISTRATION="$ROOT/Noumaan/registration.php";
-const String LOGIN="$ROOT/Noumaan/";
+const String loginurl="$ROOT/login.php";
