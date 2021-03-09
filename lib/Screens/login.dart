@@ -32,7 +32,7 @@ class _LoginPage extends State<LoginPage> {
     Map<String, dynamic> values = {'username': username, 'password': password};
 
     try {
-      var response = await dio.post(loginurl, data: values);
+      var response = await dio.post(loginUrlWeb, data: values);
 
       if (response.statusCode == 200) {
         var jsondata = json.decode('$response');

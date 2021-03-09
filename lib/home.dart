@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,6 +9,12 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +26,7 @@ class _Home extends State<Home> {
             Icons.menu,  // add custom icons also
           ),
         ),
+        backgroundColor: Colors.deepOrangeAccent,
         actions: <Widget>[
           Padding(
               padding: EdgeInsets.only(right: 20.0),
