@@ -35,9 +35,9 @@ class _LoginScreen2State extends State<LoginScreen2> {
             await pr.hide();
 
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('id', jsonData["s_id"]);
-            await prefs.setString('name', jsonData["s_fullname"]);
-            await prefs.setString('email', jsonData["s_username"]);
+            await prefs.setString('id', jsonData["uid"]);
+            await prefs.setString('fullname', jsonData["fullname"]);
+            await prefs.setString('username', jsonData["username"]);
 
             // Navigator.push(context, MaterialPageRoute(builder: (context) => Home()),);
             Navigator.pushReplacementNamed(context, '/home');
@@ -56,6 +56,10 @@ class _LoginScreen2State extends State<LoginScreen2> {
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

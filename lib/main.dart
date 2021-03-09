@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nfn_login/Screens/login_screen.dart';
-import 'Screens/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
-import 'login_talha.dart';
 
 
 void main() {
@@ -15,16 +14,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State {
+  bool _loginStatus = false;
+  void loginCheck() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if(prefs.getString('id') != null){
+    setState(() {
+      _loginStatus = true;
+    });
+  }
+}
   @override
   void initState() {
-    // TODO: implement initState
+    loginCheck();
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // home: (_loginStatus==1)?Home():LoginPage(),
-      home: LoginScreen2(),
+      home: (_loginStatus)?Home():LoginScreen2(),
       theme: ThemeData.light(),
       debugShowCheckedModeBanner: false,
       routes: {

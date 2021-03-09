@@ -9,9 +9,21 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+  String name = "";
+  void getPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('fullname');
+    });
+  }
 
+  void clearPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
   @override
   void initState() {
+    getPrefs();
     super.initState();
   }
 
@@ -32,6 +44,7 @@ class _Home extends State<Home> {
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
                 onTap: () {
+                  clearPrefs();
                   Navigator.pushNamed(context, '/login');
                 },
                 child: Icon(
@@ -69,7 +82,7 @@ class _Home extends State<Home> {
           Container(
             margin: EdgeInsets.only(top: 80),
             child: Text(
-              "Welcome to System",
+              "Welcome to System, $name",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 40,
