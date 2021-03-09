@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,17 +20,16 @@ class LoginScreen2 extends StatefulWidget {
 class _LoginScreen2State extends State<LoginScreen2> {
 
   void startLogin() async {
-    Dio dio = new Dio();
-    dio.options.headers['content-Type'] = 'application/json';
-
     Map<String, dynamic> values = {'username': username.text, 'password': password.text};
+    Map<String, String> header = {"Content-type": "application/json"};
     pr.show();
 
     try{
-      var response = await http.post(loginUrlWeb, body: values);
-      print(response);
+      var response = await http.post(Uri.parse(loginUrlFun), headers: header, body: json.encode(values));
+      // print(response.statusCode);
+      // print(response.body);
       if (response.statusCode == 200) {
-        var jsonData = jsonDecode('$response');
+        var jsonData = jsonDecode('${response.body}');
           if (jsonData["success"]) {
             await pr.hide();
 
@@ -50,11 +48,15 @@ class _LoginScreen2State extends State<LoginScreen2> {
         await pr.hide();
         _showDialog("Error during connecting to server.");
       }
+    } on Error catch (e){
+      await pr.hide();
+      _showDialog("error");
+      Map<String, dynamic> result = jsonDecode('${e}');
+      _showDialog(result["message"]);
     } catch (e){
       await pr.hide();
       _showDialog("error");
-      Map<String, dynamic> result = jsonDecode('${e.response}');
-      _showDialog(result["message"]);
+      print(e);
     }
   }
 
