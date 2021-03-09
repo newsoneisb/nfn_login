@@ -30,18 +30,14 @@ class _LoginScreen2State extends State<LoginScreen2> {
       var response = await dio.post(loginurl, data: values);
       if (response.statusCode == 200) {
         var jsonData = json.decode('$response');
-          print("Success");
           if (jsonData["success"]) {
-            print("Success");
             await pr.hide();
-
 
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('id', jsonData["s_id"]);
             await prefs.setString('name', jsonData["s_fullname"]);
             await prefs.setString('email', jsonData["s_username"]);
 
-            print("Prefs Added");
             // Navigator.push(context, MaterialPageRoute(builder: (context) => Home()),);
             Navigator.pushReplacementNamed(context, '/home');
           } else {
