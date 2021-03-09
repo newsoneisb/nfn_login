@@ -45,9 +45,9 @@ class _LoginScreenState extends State<LoginScreen> {
     await pr.show();
 
     try {
-      print(loginurl);
+      print(loginUrlWeb);
       print(values);
-      var response = await dio.post(loginurl, data: values);
+      var response = await dio.post(loginUrlWeb, data: values);
       Map<String, dynamic> result = jsonDecode('$response');
 
       // Insert

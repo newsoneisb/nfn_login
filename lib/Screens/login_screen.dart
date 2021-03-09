@@ -27,9 +27,10 @@ class _LoginScreen2State extends State<LoginScreen2> {
     pr.show();
 
     try{
-      var response = await dio.post(loginurl, data: values);
+      var response = await dio.post(loginUrlWeb, data: values);
+      // print(response);
       if (response.statusCode == 200) {
-        var jsonData = json.decode('$response');
+        var jsonData = jsonDecode('$response');
           if (jsonData["success"]) {
             await pr.hide();
 
@@ -111,9 +112,10 @@ class _LoginScreen2State extends State<LoginScreen2> {
             child: Column(children: <Widget>[
               headingText(),
               headingText2(),
-
+              SizedBox(height: 30,),
               usernameField(),
               passwordField(),
+              SizedBox(height: 30,),
               loginButton(),
             ]),
           )),
@@ -137,7 +139,7 @@ class _LoginScreen2State extends State<LoginScreen2> {
     return Container(
       margin: EdgeInsets.only(top: 10),
       child: Text(
-        "Sign In using Email and Password",
+        "Sign In using Username and Password",
         style: TextStyle(color: Colors.white, fontSize: 15),
       ), //subtitle text
     );
