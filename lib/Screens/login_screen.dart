@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:nfn_login/Api/api.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 ProgressDialog pr;
 TextEditingController username = new TextEditingController();
@@ -27,8 +28,8 @@ class _LoginScreen2State extends State<LoginScreen2> {
     pr.show();
 
     try{
-      var response = await dio.post(loginUrlWeb, data: values);
-      // print(response);
+      var response = await http.post(loginUrlWeb, body: values);
+      print(response);
       if (response.statusCode == 200) {
         var jsonData = jsonDecode('$response');
           if (jsonData["success"]) {
@@ -51,6 +52,7 @@ class _LoginScreen2State extends State<LoginScreen2> {
       }
     } catch (e){
       await pr.hide();
+      _showDialog("error");
       Map<String, dynamic> result = jsonDecode('${e.response}');
       _showDialog(result["message"]);
     }
