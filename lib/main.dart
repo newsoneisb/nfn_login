@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nfn_login/Screens/login_screen.dart';
+import 'package:nfn_login/Screens/web_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 
@@ -32,6 +33,7 @@ class _MyAppState extends State {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: (_loginStatus)?Home():LoginScreen2(),
+      // home: LoadURL(),
       theme: ThemeData.light(),
       debugShowCheckedModeBanner: false,
       routes: {
