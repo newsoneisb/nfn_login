@@ -82,7 +82,7 @@ class _Home extends State<Home> {
           Container(
             margin: EdgeInsets.only(top: 80),
             child: Text(
-              "Welcome to System, $name",
+              "Welcome to App, $name",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 40,

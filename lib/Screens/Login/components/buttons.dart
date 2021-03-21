@@ -1,28 +1,32 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:nfn_login/Api/api.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+var _loading = false;
 ProgressDialog pr;
 TextEditingController username = new TextEditingController();
 TextEditingController password = new TextEditingController();
 
-class LoginScreen extends StatefulWidget {
+
+class MyButtons extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _MyButtonsState createState() => _MyButtonsState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _MyButtonsState extends State<MyButtons> {
 
   void startLogin() async {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     Map<String, dynamic> values = {'username': username.text, 'password': password.text};
     Map<String, String> header = {"Content-type": "application/json"};
-    pr.show();
+    // pr.show();
+    setState(() {
+      _loading = true;
+    });
 
     try{
       var response = await http.post(Uri.parse(loginUrlFun), headers: header, body: json.encode(values));
@@ -30,47 +34,53 @@ class _LoginScreenState extends State<LoginScreen> {
       // print(response.body);
       if (response.statusCode == 200) {
         var jsonData = jsonDecode('${response.body}');
-          if (jsonData["success"]) {
-            await pr.hide();
+        if (jsonData["success"]) {
+          await pr.hide();
+          setState(() {
+            _loading = false;
+          });
 
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('id', jsonData["uid"]);
-            await prefs.setString('fullname', jsonData["fullname"]);
-            await prefs.setString('username', jsonData["username"]);
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('id', jsonData["uid"]);
+          await prefs.setString('fullname', jsonData["fullname"]);
+          await prefs.setString('username', jsonData["username"]);
 
-            // Navigator.push(context, MaterialPageRoute(builder: (context) => Home()),);
-            Navigator.pushReplacementNamed(context, '/home');
-          } else {
-            await pr.hide();
-            _showDialog(jsonData["message"]);
-          }
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => Home()),);
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          setState(() {
+            _loading = false;
+          });
+          await pr.hide();
+          _showDialog(jsonData["message"]);
+        }
       } else {
         await pr.hide();
+        setState(() {
+          _loading = false;
+        });
         _showDialog("Error during connecting to server.");
       }
     } on Error catch (e){
       await pr.hide();
+      setState(() {
+        _loading = false;
+      });
       _showDialog("error");
-      Map<String, dynamic> result = jsonDecode('${e}');
+      Map<String, dynamic> result = jsonDecode('$e');
       _showDialog(result["message"]);
     } catch (e){
       await pr.hide();
+      setState(() {
+        _loading = false;
+      });
       _showDialog("error");
       print(e);
     }
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: Colors.transparent
-          //color set to transparent or set your own color
-        ));
     pr = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -89,67 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
       messageTextStyle: TextStyle(
           color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600),
     );
-    return Scaffold(
-      body: SingleChildScrollView(
-          child: Container(
-            constraints: BoxConstraints(
-              minHeight: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
-            ),
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.orange,
-                  Colors.deepOrangeAccent,
-                  Colors.red,
-                  Colors.redAccent,
-                ],
-              ),
-            ),
-            //show linear gradient background of page
-
-            padding: EdgeInsets.all(20),
-            child: Column(children: <Widget>[
-              headingText(),
-              headingText2(),
-              SizedBox(height: 30,),
-              usernameField(),
-              passwordField(),
-              SizedBox(height: 30,),
-              loginButton(),
-            ]),
-          )),
-    );
-  }
-
-  Widget headingText() {
-    return Column(children: <Widget>[
-      Container(
-        margin: EdgeInsets.only(top: 80),
-        child: Text(
-          "Sign Into System",
-          style: TextStyle(
-              color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
-        ), //title text
-      )
-    ]);
-  }
-
-  Widget headingText2() {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      child: Text(
-        "Sign In using Username and Password",
-        style: TextStyle(color: Colors.white, fontSize: 15),
-      ), //subtitle text
+    return Column(
+      children: <Widget>[
+        usernameField(),
+        passwordField(),
+        SizedBox(
+          height: 30,
+        ),
+        loginButton(),
+      ],
     );
   }
 
@@ -190,16 +148,17 @@ class _LoginScreenState extends State<LoginScreen> {
       child: SizedBox(
         height: 60,
         width: double.infinity,
-        child: RaisedButton(
-          onPressed: startLogin,
-          child: Text(
+        child: ElevatedButton(
+          onPressed: _loading ? (){} : startLogin,
+          child: _loading ? CircularProgressIndicator(): Text(
             "LOGIN NOW",
             style: TextStyle(fontSize: 20),
           ),
-          colorBrightness: Brightness.dark,
-          color: Colors.orange,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30)),
+          style: ElevatedButton.styleFrom(
+            primary: Colors.orange,
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          ),
         ),
       ),
     );
@@ -237,24 +196,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showDialog(String text) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Login Fail"),
-          content: new Text(text),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new TextButton(
-              child: new Text("Try Again."),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+
+    final snackBar = SnackBar(
+      content: Text(text),
+     backgroundColor: Colors.red,
+      duration: new Duration(seconds: 2),
     );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     // return object of type Dialog
+    //     return AlertDialog(
+    //       title: new Text("Login Fail"),
+    //       content: new Text(text),
+    //       actions: <Widget>[
+    //         // usually buttons at the bottom of the dialog
+    //         new TextButton(
+    //           child: new Text("Try Again."),
+    //           onPressed: () {
+    //             Navigator.of(context).pop();
+    //           },
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
   }
 }

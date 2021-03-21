@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nfn_login/Screens/login_screen.dart';
+import 'package:nfn_login/Screens/Login/login_screen2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 
